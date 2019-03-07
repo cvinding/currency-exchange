@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".view.StartActivity">
+
+    <Spinner
+        android:id="@+id/fromCurrency"
+        style="@style/Widget.AppCompat.Spinner.Underlined"
+        android:layout_width="152dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="28dp"
+        android:spinnerMode="dropdown"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lastUpdated" />
+
+    <Spinner
+        android:id="@+id/toCurrency"
+        style="@style/Widget.AppCompat.Spinner.Underlined"
+        android:layout_width="152dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="16dp"
+        android:spinnerMode="dropdown"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lastUpdated" />
+
+    <ImageView
+        android:id="@+id/swapConversion"
+        android:layout_width="44dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="15dp"
+        app:layout_constraintEnd_toStartOf="@+id/toCurrency"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/fromCurrency"
+        app:layout_constraintTop_toBottomOf="@+id/lastUpdated"
+        app:srcCompat="@drawable/ic_swap_arrows" />
+
+    <EditText
+        android:id="@+id/inputAmount"
+        android:layout_width="152dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="28dp"
+        android:ems="10"
+        android:hint="Input"
+        android:inputType="numberSigned|number|numberDecimal"
+        android:singleLine="true"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/fromCurrency" />
+
+    <EditText
+        android:id="@+id/outputAmount"
+        android:layout_width="152dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="16dp"
+        android:editable="false"
+        android:ems="10"
+        android:enabled="false"
+        android:hint="Output"
+        android:inputType="none"
+        android:singleLine="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toCurrency" />
+
+    <EditText
+        android:id="@+id/lastUpdated"
+        android:layout_width="378dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="16dp"
+        android:editable="false"
+        android:ems="10"
+        android:enabled="false"
+        android:hint="Last update"
+        android:inputType="none"
+        android:singleLine="true"
+        android:textAlignment="center"
+        android:textColor="#cf0000"
+        android:textSize="14sp"
+        android:textStyle="bold|italic"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</android.support.constraint.ConstraintLayout>
