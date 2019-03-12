@@ -6,6 +6,7 @@ import android.arch.lifecycle.ViewModel;
 import android.content.Context;
 import android.util.Log;
 
+import com.example.testapp.listener.FormatCurrencyRatesListener;
 import com.example.testapp.listener.RequestListener;
 import com.example.testapp.model.CurrencyConverter;
 import com.example.testapp.model.CustomRequest;
@@ -17,6 +18,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -41,7 +43,7 @@ public class StartViewModel extends ViewModel {
 
         if (currencyRates == null) {
             currencyRates = new MutableLiveData<>();
-            this.loadCurrencyRates(context);
+            this.loadCurrencyRates(context, false);
         }
 
         return currencyRates;
@@ -78,29 +80,36 @@ public class StartViewModel extends ViewModel {
      *
      * @param context
      */
-    private void loadCurrencyRates(Context context) {
+    private void loadCurrencyRates(Context context, boolean force) {
         // Initialize the FileHandler class
         FileHandler fileHandler = new FileHandler();
-
-        Date date = new Date();
-
-        Log.d("TimeSjov", " NOW " + date.getTime());
-
-        date.setHours(0);
-        date.setMinutes(0);
-        date.setSeconds(0);
-
-        long whenToUpdate = date.getTime() + 57600000;
-
-        Log.d("TimeSjov", " TIME FOR TODAY " + date.getTime());
 
         // Give the file a name
         String filename = "apiData.json";
 
         // Check if the fileExists and read the file if that is true
-        if(fileHandler.fileExists(filename, context)) {
+        if(fileHandler.fileExists(filename, context) && !force) {
             Log.d("LoadCurrencyRates", "Reading file");
-            formatCurrencyRates(fileHandler.readFromFile(filename, context));
+            formatCurrencyRates(fileHandler.readFromFile(filename, context), date -> {
+                try {
+
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                    Date updatedDate = sdf.parse(date);
+
+                    long updateDateMS = updatedDate.getTime() + 57600000;
+
+                    Date now = new Date();
+
+                    if(now.getTime() > updateDateMS) {
+                        loadCurrencyRates(context, true);
+                    }
+
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+
+            });
+
             return;
         }
 
@@ -118,7 +127,12 @@ public class StartViewModel extends ViewModel {
                 public void onSuccess(String response) {
                     Log.d("LoadCurrencyRates", "Fetching file");
                     fileHandler.writeToFile(response, filename, context);
-                    formatCurrencyRates(response);
+                    formatCurrencyRates(response, new FormatCurrencyRatesListener() {
+                        @Override
+                        public void onPostedDate(String date) {
+                            //TODO: do nothing
+                        }
+                    });
                 }
 
                 @Override
@@ -133,7 +147,7 @@ public class StartViewModel extends ViewModel {
      *
      * @param json
      */
-    private void formatCurrencyRates(String json) {
+    private void formatCurrencyRates(String json, FormatCurrencyRatesListener listener) {
         try {
             // This is ugly
             String converted = (new JSONObject(json)).optString("gesmes:Envelope");
@@ -142,6 +156,8 @@ public class StartViewModel extends ViewModel {
 
             // Get last updated
             lastUpdated.postValue((new JSONObject(converted)).optString("time"));
+            // Callback the time
+            listener.onPostedDate((new JSONObject(converted)).optString("time"));
 
             converted = (new JSONObject(converted)).optString("Cube");
 
