@@ -1,4 +1,4 @@
-# currency_exchange
+# currency-exchange
 A simple Android application for calculating currency rates.
 * MVVM inspired
 * GPL-3.0 Licensed
